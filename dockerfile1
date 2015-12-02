@@ -1,0 +1,30 @@
+FROM gcr.io/stacksmith-images/ubuntu:14.04-buildpack
+
+MAINTAINER Bitnami <containers@bitnami.com>
+
+LABEL com.bitnami.stacksmith.id="Y8Qx8Tc" \
+      com.bitnami.stacksmith.name="ubuntu-django187a"
+
+ENV STACKSMITH_STACK_ID="Y8Qx8Tc" \
+    STACKSMITH_STACK_NAME="ubuntu-django187a"
+ENV STACKSMITH_STACK_PRIVATE=1
+
+# Runtime
+RUN bitnami-pkg-install python-2.7.10-1
+
+# Framework
+RUN bitnami-pkg-install django-1.8.7-0
+
+# Runtime template
+ENV PATH=/opt/bitnami/python/bin:$PATH
+
+COPY . /app
+RUN chown -R bitnami:bitnami /app
+USER bitnami
+WORKDIR /app
+
+# Framework template
+RUN pip install -r requirements.txt
+
+EXPOSE 8000
+CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
